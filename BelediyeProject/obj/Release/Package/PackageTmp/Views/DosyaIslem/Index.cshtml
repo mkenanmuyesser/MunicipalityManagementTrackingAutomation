@@ -1,0 +1,268 @@
+﻿@model BelediyeProject.Models.DosyaIslemViewModel
+
+@{
+    ViewBag.Title = "Dosya İşlemleri";
+    Layout = "~/Views/Shared/_AnaSayfaLayoutPage.cshtml";
+}
+
+@section MenuSection
+{
+    @foreach (var menuItem in Model.Menu.Where(p => p.UstMenuId == null))
+    {
+        @Html.Raw("<li>")
+        if (string.IsNullOrEmpty(menuItem.Link))
+        {
+            <a href='#'><i class="fa fa-th-large"></i> <span class="nav-label">@menuItem.Adi</span> <span class="fa arrow"></span></a>
+
+            @Html.Raw("<ul class='nav nav - second - level'>")
+
+            foreach (var subMenuItem in Model.Menu.Where(p => p.UstMenuId == menuItem.Id))
+            {
+                <li><a href='@subMenuItem.Link'>@subMenuItem.Adi</a></li>
+            }
+
+            @Html.Raw("</ul>")
+        }
+        else
+        {
+            <a href='@menuItem.Link'><i class="fa fa-th-large"></i> <span class="nav-label">@menuItem.Adi</span></a>
+        }
+
+        @Html.Raw("</li>")
+    }
+}
+
+@section MainSection
+{
+    @using (Html.BeginForm())
+    {
+        @Html.HiddenFor(m => m.DosyaGonderilecekBirimTipKey)
+        <script type="text/javascript">          
+            $(function () {
+                $("#BaslangicGelen").datepicker(
+                    {                      
+                        dateFormat: "dd.mm.yy",
+                        autoSize: true,
+                        dayNames: ["pazar", "pazartesi", "salı", "çarşamba", "perşembe", "cuma", "cumartesi"],
+                        dayNamesMin: ["pa", "pzt", "sa", "çar", "per", "cum", "cmt"],
+                        defaultDate: +5,
+                        maxDate: "+2y+1m +2w",
+                        minDate: "-1y-1m -2w",
+                        monthNamesShort: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+                        nextText: "ileri",
+                        prevText: "geri",
+                    }); 
+            });
+
+            $(function () {
+                $("#BitisGelen").datepicker(
+                    {
+                        dateFormat: "dd.mm.yy",
+                        autoSize: true,
+                        dayNames: ["pazar", "pazartesi", "salı", "çarşamba", "perşembe", "cuma", "cumartesi"],
+                        dayNamesMin: ["pa", "pzt", "sa", "çar", "per", "cum", "cmt"],
+                        defaultDate: +5,
+                        maxDate: "+2y+1m +2w",
+                        minDate: "-1y-1m -2w",
+                        monthNamesShort: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+                        nextText: "ileri",
+                        prevText: "geri",
+                    });
+            });
+
+            $(function () {
+                $("#BaslangicIslemYapilmis").datepicker(
+                    {
+                        dateFormat: "dd.mm.yy",
+                        autoSize: true,
+                        dayNames: ["pazar", "pazartesi", "salı", "çarşamba", "perşembe", "cuma", "cumartesi"],
+                        dayNamesMin: ["pa", "pzt", "sa", "çar", "per", "cum", "cmt"],
+                        defaultDate: +5,
+                        maxDate: "+2y+1m +2w",
+                        minDate: "-1y-1m -2w",
+                        monthNamesShort: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+                        nextText: "ileri",
+                        prevText: "geri",
+                    });
+            });
+
+            $(function () {
+                $("#BitisIslemYapilmis").datepicker(
+                    {
+                        dateFormat: "dd.mm.yy",
+                        autoSize: true,
+                        dayNames: ["pazar", "pazartesi", "salı", "çarşamba", "perşembe", "cuma", "cumartesi"],
+                        dayNamesMin: ["pa", "pzt", "sa", "çar", "per", "cum", "cmt"],
+                        defaultDate: +5,
+                        maxDate: "+2y+1m +2w",
+                        minDate: "-1y-1m -2w",
+                        monthNamesShort: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+                        nextText: "ileri",
+                        prevText: "geri",
+                    });
+            });
+        </script>
+        <div class="wrapper wrapper-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel blank-panel">
+                        <div class="panel-heading">
+                            <div class="panel-title m-b-md"><h4>Dosya İşlemleri</h4></div>
+                            <div class="panel-options">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a data-toggle="tab" href="#tab-1">Gelen Dosyalar</a></li>
+                                    <li class=""><a data-toggle="tab" href="#tab-2">İşlem Yapılan Dosyalar</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div id="tab-1" class="tab-pane active">
+                                    <div class="ibox-title" style="min-height:60px;">
+                                        <div class="pull-left">
+                                            @Html.DatePickerFor(m => m.BaslangicGelen, "autoclose=true", "todayBtn=true", "todayHighlight=true")
+                                        </div>
+                                        <div class="pull-left">
+                                            @Html.DatePickerFor(m => m.BitisGelen, "autoclose=true", "todayBtn=true", "todayHighlight=true")
+                                        </div>
+                                        <div class="pull-left">
+                                            <input type="submit" id="Ara" value="Ara" class="btn btn-success" />
+                                        </div>
+                                        <div class="ibox-tools">
+                                            <a class="link" href="/DosyaIslem/Index/@Model.DosyaGonderilecekBirimTipKey">
+                                                <i class="fa fa-refresh"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Mesaj İçeriği</th>
+                                                        <th>Dosya Açılma Nedeni</th>
+                                                        <th>Gönderilecek Birim</th>
+                                                        <th>Mesaj Tip</th>
+                                                        <th>Kullanıcı IP</th>
+                                                        <th>GPS</th>
+                                                        <th>İşlem Zamanı</th>
+                                                        <th>Dosya Durum</th>
+                                                        <th>Açıklama</th>
+                                                        <th>İşlemler</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var dosya in Model.GelenDosyalar)
+                                                    {
+                                                        <tr>
+                                                            <td>@dosya.DosyaKey</td>
+                                                            <td>@HttpUtility.HtmlDecode(@dosya.Mesaj)</td>
+                                                            <td>@dosya.tt_DosyaAcilmaNedenTip.DosyaAcilmaNedenTipAdi</td>
+                                                            <td>@dosya.tt_DosyaGonderilecekBirimTip.DosyaGonderilecekBirimTipAdi</td>
+                                                            <td>@dosya.tt_DosyaMesajTip.DosyaMesajTipAdi</td>
+                                                            <td>@dosya.IpAdres</td>
+                                                            <td>@dosya.Enlem - @dosya.Boylam</td>
+                                                            <td>@dosya.IslemZamani</td>
+                                                            <td>@dosya.tt_DosyaDurumTip.DosyaDurumTipAdi</td>
+                                                            <td>
+                                                                <table>
+                                                                    <tr>
+                                                                        @foreach (var resim in dosya.DosyaResims)
+                                                                        {
+                                                                            <td>
+                                                                                <img src="@resim.DosyaYolu" width="50" height="50" />
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td>
+                                                                <a href="/DosyaIslem/Detaylar/@dosya.DosyaKey">Detaylar</a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-2" class="tab-pane">
+                                    <div class="ibox-title" style="min-height:60px;">
+                                        <div class="pull-left">
+                                            @Html.DatePickerFor(m => m.BaslangicIslemYapilmis, "autoclose=true", "todayBtn=true", "todayHighlight=true")
+                                        </div>
+                                        <div class="pull-left">
+                                            @Html.DatePickerFor(m => m.BitisIslemYapilmis, "autoclose=true", "todayBtn=true", "todayHighlight=true")
+                                        </div>
+                                        <div class="pull-left">
+                                            <input type="submit" id="Ara" value="Ara" class="btn btn-success" />
+                                        </div>
+                                        <div class="ibox-tools">
+                                            <a class="link" href="/DosyaIslem/Index/@Model.DosyaGonderilecekBirimTipKey">
+                                                <i class="fa fa-refresh"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Mesaj İçeriği</th>
+                                                        <th>Dosya Açılma Nedeni</th>
+                                                        <th>Gönderilecek Birim</th>
+                                                        <th>Mesaj Tip</th>
+                                                        <th>Kullanıcı IP</th>
+                                                        <th>GPS</th>
+                                                        <th>İşlem Zamanı</th>
+                                                        <th>Dosya Durum</th>
+                                                        <th>Açıklama</th>
+                                                        <th>İşlemler</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var dosya in Model.IslemYapilanDosyalar)
+                                                    {
+                                                        <tr>
+                                                            <td>@dosya.DosyaKey</td>
+                                                            <td>@dosya.Mesaj</td>
+                                                            <td>@dosya.tt_DosyaAcilmaNedenTip.DosyaAcilmaNedenTipAdi</td>
+                                                            <td>@dosya.tt_DosyaGonderilecekBirimTip.DosyaGonderilecekBirimTipAdi</td>
+                                                            <td>@dosya.tt_DosyaMesajTip.DosyaMesajTipAdi</td>
+                                                            <td>@dosya.IpAdres</td>
+                                                            <td>@dosya.Enlem - @dosya.Boylam</td>
+                                                            <td>@dosya.IslemZamani</td>
+                                                            <td>@dosya.tt_DosyaDurumTip.DosyaDurumTipAdi</td>
+                                                            <td>
+                                                                <table>
+                                                                    <tr>
+                                                                        @foreach (var resim in dosya.DosyaResims)
+                                                                        {
+                                                                            <td>
+                                                                                <img src="@resim.DosyaYolu" width="50" height="50" />
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td>
+                                                                <a href="/DosyaIslem/Detaylar/@dosya.DosyaKey">Detaylar</a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+

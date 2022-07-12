@@ -1,0 +1,40 @@
+﻿@model BelediyeProject.Models.AnaSayfaViewModel
+
+@{
+    ViewBag.Title = "Ana Sayfa";
+    Layout = "~/Views/Shared/_AnaSayfaLayoutPage.cshtml";
+}
+
+@section MenuSection
+{
+    @foreach (var menuItem in Model.Menu().Where(p => p.UstMenuId == null))
+    {
+        @Html.Raw("<li>")
+        if (string.IsNullOrEmpty(menuItem.Link))
+        {
+            <a href='#'><i class="fa fa-th-large"></i> <span class="nav-label">@menuItem.Adi</span> <span class="fa arrow"></span></a>
+
+            @Html.Raw("<ul class='nav nav - second - level'>")
+
+            foreach (var subMenuItem in Model.Menu().Where(p => p.UstMenuId == menuItem.Id))
+            {
+                <li><a href='@subMenuItem.Link'>@subMenuItem.Adi</a></li>
+            }
+
+            @Html.Raw("</ul>")
+        }
+        else
+        {
+            <a href='@menuItem.Link'><i class="fa fa-th-large"></i> <span class="nav-label">@menuItem.Adi</span></a>
+        }
+
+        @Html.Raw("</li>")
+    }
+}
+
+@section MainSection
+{
+    <center>
+        <img src='~/Uploads/Resim/@Model.ProgramAyar.ResimUrl' />
+    </center>
+}

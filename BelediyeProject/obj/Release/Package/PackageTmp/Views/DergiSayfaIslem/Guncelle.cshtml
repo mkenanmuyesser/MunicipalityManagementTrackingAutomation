@@ -1,0 +1,167 @@
+﻿@model BelediyeProject.Models.DergiSayfaIslemViewModel
+
+@{
+    ViewBag.Title = "Dergi Sayfa Güncelle";
+    Layout = "~/Views/Shared/_AnaSayfaLayoutPage.cshtml";
+}
+
+@section MenuSection
+{
+    @foreach (var menuItem in Model.Menu.Where(p => p.UstMenuId == null))
+    {
+        @Html.Raw("<li>")
+        if (string.IsNullOrEmpty(menuItem.Link))
+        {
+            <a href='#'><i class="fa fa-th-large"></i> <span class="nav-label">@menuItem.Adi</span> <span class="fa arrow"></span></a>
+
+            @Html.Raw("<ul class='nav nav - second - level'>")
+
+            foreach (var subMenuItem in Model.Menu.Where(p => p.UstMenuId == menuItem.Id))
+            {
+                <li><a href='@subMenuItem.Link'>@subMenuItem.Adi</a></li>
+            }
+
+            @Html.Raw("</ul>")
+        }
+        else
+        {
+            <a href='@menuItem.Link'><i class="fa fa-th-large"></i> <span class="nav-label">@menuItem.Adi</span></a>
+        }
+
+        @Html.Raw("</li>")
+    }
+}
+
+@section HeadSection
+{
+    @Scripts.Render("~/ckeditor/ckeditor.js");
+    @Scripts.Render("~/ckeditor/ckfinder/ckfinder.js");
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("#Tarih").datepicker(
+                {
+                    dateFormat: "dd.mm.yy",
+                    autoSize: true,
+                    dayNames: ["pazar", "pazartesi", "salı", "çarşamba", "perşembe", "cuma", "cumartesi"],
+                    dayNamesMin: ["pa", "pzt", "sa", "çar", "per", "cum", "cmt"],
+                    defaultDate: +5,
+                    maxDate: "+2y+1m +2w",
+                    minDate: "-1y-1m -2w",
+                    monthNamesShort: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+                    nextText: "ileri",
+                    prevText: "geri",
+                });
+        });
+
+    </script>
+}
+
+@section MainSection
+{
+
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="wrapper wrapper-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <h3>
+                                Dergi Sayfa Güncelle
+                            </h3>
+                            <div class="form-horizontal m-t-md">
+
+                                @Html.HiddenFor(m => m.DergiSayfaKey)
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Sayfa No : </label>
+                                    <div class="col-sm-10">
+                                        @Html.TextBoxFor(m => m.SayfaNo, new
+                                   {
+                                       @type = "text",
+                                       @class = "form-control",
+                                       @placeholder = "",
+                                       @required = "",
+                                   })
+                                        @Html.ValidationMessageFor(m => m.SayfaNo)
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Dergi : </label>
+                                    <div class="col-sm-4">
+                                        @Html.DropDownListFor(m => m.DergiKey,
+                                                               new SelectList(Model.DergiList, "DergiKey", "Adi"),
+                                                               new
+                                                               {
+                                                                   @class = "form - control m - b",
+                                                                   @required = "",
+                                                                   @style = "width:200px",
+                                                                   @id = "drpRol",
+                                                                   onchange = "SelectedIndexChanged()"
+                                                               })
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Aktif : </label>
+                                    <div class="col-sm-10">
+                                        @Html.CheckBoxFor(m => m.AktifMi, new
+                                   {
+                                       @class = "i-checks",
+                                       @checked = "checked"
+                                   })
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group text-center">
+                                    <input type="submit" id="KaydetGuncelle" value='
+                                       @if (Model.DergiSayfaKey == 0 || Model.DergiSayfaKey == -1)
+                                       {
+                                           @Html.Raw("Kaydet")
+                                       }
+                                       else
+                                       {
+                                           @Html.Raw("Güncelle")
+                                       } '
+                                           formaction="/DergiSayfaIslem/Guncelle" class="btn btn-success" />
+                                    <input type="button" value="İptal" class="btn btn-danger" onclick="window.location.href='@Url.Action("Index", "DergiSayfaIslem" )';" />
+                                </div>
+                                @if (Model.DosyaYolu != null)
+                                {
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <div class="text-center">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <img width="200" height="250" src='~/Uploads/Resim/@Model.DosyaYolu' />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+                                @if (Model.DosyaYolu == null)
+                                {
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 col-sm-2 control-label">Resim : </label>
+                                        <div class="col-sm-10">
+                                            @Html.TextBoxFor(m => m.ImageUpload, new { type = "file" })
+                                        </div>
+                                        <br />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
