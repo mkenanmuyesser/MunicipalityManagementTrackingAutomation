@@ -9,3 +9,7 @@ In this application, which is used together with mobile applications, "Send Chec
 All the services used in the application on the mobile device (ios, android) are fed from this application with Webapi.
 
 Used technologies : C#, Asp.Net Mvc, Webapi, MS Sql Server, Html, Bootstrap, Entity Framework, Mobile notification properties, Maps
+
+Minran Kenan MÜYESSER
+mkenanmuyesser@hotmail.com
+https://www.linkedin.com/in/minran-kenan-müyesser
